@@ -9,8 +9,8 @@ class Word2VecTest extends FlatSpec with Matchers  {
     val v2 = Vector(Array(2.0f, 2.0f, 2.0f))
     val v3 = Vector(Array(2.5f, 5.1f, 2.0f))
     val map = Map("v1" -> v1, "v2" -> v2, "v3" -> v3, "v4" -> v4)
-    val vec = Word2Vec(map, 3, true)
-    val res = vec.nearestNeighbor("v1", Set("v2", "v4", "v3"))
+    val vec = Word2Vec(map, 3)
+    val res: List[(String, Float)] = vec.nearestNeighbor("v1", Set("v2", "v4", "v3"))
     res.head._1 should be ("v2")
     res(2)._1 should be ("v4")
   }
@@ -21,7 +21,7 @@ class Word2VecTest extends FlatSpec with Matchers  {
     val v2 = Vector(Array(2.0f, 2.0f, 2.0f))
     val v3 = Vector(Array(2.5f, 5.1f, 2.0f))
     val map = Map("v1" -> v1, "v2" -> v2, "v3" -> v3, "v4" -> v4)
-    val vec = Word2Vec(map, 3, true)
+    val vec = Word2Vec(map, 3)
     val res = vec.rank("v1", Set("v2", "v4", "v3"), 1)
     res.head._1 should be ("v2")
   }

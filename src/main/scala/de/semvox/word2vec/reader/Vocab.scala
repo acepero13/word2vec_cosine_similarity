@@ -1,3 +1,4 @@
 package de.semvox.word2vec.reader
-case class Vocab(vectors: Map[String, Array[Float]], size: Int)
+import de.semvox.word2vec.linealg.Vector
+case class Vocab(vectors: Map[String, Vector], size: Int)
 

@@ -1,6 +1,6 @@
 package de.semvox.word2vec.reader
 
-import de.semvox.word2vec.utils.VectorHelper
+import de.semvox.word2vec.linealg.Vector
 
 import scala.collection.mutable.ListBuffer
 import scala.io.BufferedSource
@@ -9,15 +9,13 @@ case class VecReader(filename: String, limit: Integer, normalize: Boolean, oldFo
   override def load(): Option[Vocab] = {
     val source: BufferedSource = io.Source.fromFile(filename)
     val header = source.getLines().take(1).next().stripLineEnd.split(" ").toList
-    val wordPairs = new ListBuffer[(String, Array[Float])]
+    val wordPairs = new ListBuffer[(String, Vector)]
 
     val (vecSize: Int, numWords: Int) = getModelStructure(header)
 
-    val normalizer = if (normalize) (vector: Array[Float]) => VectorHelper.normVector(vector) else (vector: Array[Float]) => vector
-
     def process(line: String) = {
       val vector = line.stripLineEnd.split(" ")
-      wordPairs += readTxtVector(vector.head, vector.tail.toList, normalizer)
+      wordPairs += readTxtVector(vector.head, vector.tail.toList, normalize)
     }
     val howMany = (numWords * 0.75).toInt
 
@@ -34,8 +32,10 @@ case class VecReader(filename: String, limit: Integer, normalize: Boolean, oldFo
     }
   }
 
-  def readTxtVector(word: String, tokens: List[String], normalizer: Array[Float] => Array[Float]): (String, Array[Float]) = {
-    val vector = tokens.map(t => t.toFloat).toArray
-    word -> normalizer(vector)
+  def readTxtVector(word: String, tokens: List[String], normalize: Boolean): (String, Vector) = {
+    if(normalize)
+      word -> Vector(tokens.map(t => t.toFloat).toArray).normalize()
+    else
+      word -> Vector(tokens.map(t => t.toFloat).toArray)
   }
 }
