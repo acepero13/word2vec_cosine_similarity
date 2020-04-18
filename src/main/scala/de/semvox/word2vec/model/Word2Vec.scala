@@ -2,9 +2,9 @@ package de.semvox.word2vec.model
 import de.semvox.word2vec.linealg.Vector
 import de.semvox.word2vec.reader.VecReader
 
-case class Word2Vec(vocab: Map[String, Vector], vecSize: Int) extends Queryable[Vector] {
+case class Word2Vec(vocab: Queryable[Vector], vecSize: Int)  {
 
-  override def get(word: String): Option[Vector] = {
+  def get(word: String): Option[Vector] = {
     vocab.get(word)
   }
 
@@ -18,11 +18,9 @@ case class Word2Vec(vocab: Map[String, Vector], vecSize: Int) extends Queryable[
       .reverse
   }
 
-
-  def rank(word: String, in: Set[String], N: Int): List[(String, Float)] = {
+  def rank(word: String, in: Set[String], N: Int = 40): List[(String, Float)] = {
     nearestNeighbor(word, in).take(N)
   }
-
 
 }
 
@@ -31,7 +29,7 @@ object Word2Vec {
 
     val reader = VecReader(filename, Int.MaxValue, true, false)
     for (v <- reader.load()) yield {
-      new Word2Vec(v.vectors, v.size)
+      new Word2Vec(v, v.size)
     }
   }
 }
@@ -41,7 +39,7 @@ object RunWord2Vec {
 
   def timed[T](f: => T): T ={
     val start = System.nanoTime
-    try f finally reportElapsed((System.nanoTime - start))
+    try f finally reportElapsed((System.nanoTime - start) / 1000000000 )
   }
   def main(args: Array[String]): Unit = {
     timed(execute)
@@ -52,6 +50,8 @@ object RunWord2Vec {
     var model = Word2Vec(modelFile)
     model.map(m => m.nearestNeighbor("Apfel", Set("Orange", "Limo", "Kopfsalat", "Kuba")).foreach(p => println(p)))
     println("--------------")
-    model.map(m => m.nearestNeighbor("Kuba", Set("Deutschland", "Spanien", "Costa Rica")).foreach(p => println(p)))
+    timed(
+      model.map(m => m.nearestNeighbor("Kuba", Set("Deutschland", "Spanien", "Costa Rica")).foreach(p => println(p)))
+    )
   }
 }
