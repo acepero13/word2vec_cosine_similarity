@@ -17,6 +17,8 @@ case class Vector(components: Array[Float]) extends Operable {
 
   override def *(another: Vector): Float = op(another, _ * _).sum
 
+  override def *(number: Float): Vector = Vector(components.map(_ * number))
+
   override def norm(): Float = {
     Math.sqrt(
       this.components
@@ -47,4 +49,6 @@ case class Vector(components: Array[Float]) extends Operable {
   override def toString: String = {
     components.toString
   }
+
+
 }

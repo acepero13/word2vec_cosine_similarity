@@ -30,6 +30,12 @@ class VectorTest extends FlatSpec with Matchers {
     v2 - v1 should be (v1)
   }
 
+  "Multiply vector by a number" should "give new vector" in {
+    val v1 = Vector(Array(1.0f, 1.0f))
+    val expected = Vector(Array(2.0f, 2.0f))
+    v1 * 2.0f should be (expected)
+  }
+
   "Operation with uneven vectors" should "substract another vector" in {
     val v1 = Vector(Array(1.0f, 1.0f, 1.0f))
     val v2 = Vector(Array(2.0f, 2.0f))

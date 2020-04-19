@@ -16,7 +16,7 @@ case class VecReader(filename: String, limit: Integer, normalize: Boolean, oldFo
       readTxtVector(vector.head, vector.tail.toList, normalize)
     }
 
-    val wPairs = source.getLines.toStream.par.map(process).toList
+    val wPairs = source.getLines.toStream.map(process).toList
 
     source.close
     Some(Vocab(wPairs.toMap, vecSize))
