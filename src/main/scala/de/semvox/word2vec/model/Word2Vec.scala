@@ -100,6 +100,7 @@ object RunWord2Vec {
         .split(" ")
         .filter(_.length > 3)
         .toSeq, topics2)
+        .take(5)
         .foreach(p => println(p)))
       askUser()
     }
