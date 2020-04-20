@@ -22,15 +22,15 @@ case class VecReader(filename: String, limit: Integer, normalize: Boolean, oldFo
     Some(Vocab(wPairs.toMap, vecSize))
   }
 
-  def getModelStructure(header: List[String]):(Int, Int) = {
+  def getModelStructure(header: List[String]): (Int, Int) = {
     header match {
       case wordNumber :: size :: Nil => (size.toInt, Math.min(wordNumber.toInt, limit))
-      case _ => ( 300, limit.toInt)
+      case _ => (300, limit.toInt)
     }
   }
 
   def readTxtVector(word: String, tokens: List[String], normalize: Boolean): (String, Vector) = {
-    if(normalize)
+    if (normalize)
       word -> Vector(tokens.map(t => t.toFloat).toArray).normalize()
     else
       word -> Vector(tokens.map(t => t.toFloat).toArray)

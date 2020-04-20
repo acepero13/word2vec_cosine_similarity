@@ -6,19 +6,6 @@ case class Vector(components: Array[Float]) extends Operable {
     Vector(components.map(_ / normV))
   }
 
-  def cosine(another: Vector): Float = {
-    assert(this.components.length == another.components.length, "Uneven vectors!")
-    (this * another) / (this.norm * another.norm)
-  }
-
-  override def +(another: Vector): Vector = vecOp(another, _ + _)
-
-  override def -(another: Vector): Vector = vecOp(another, _ - _)
-
-  override def *(another: Vector): Float = op(another, _ * _).sum
-
-  override def *(number: Float): Vector = Vector(components.map(_ * number))
-
   override def norm(): Float = {
     Math.sqrt(
       this.components
@@ -26,6 +13,15 @@ case class Vector(components: Array[Float]) extends Operable {
         .sum
     ).toFloat
   }
+
+  def cosine(another: Vector): Float = {
+    assert(this.components.length == another.components.length, "Uneven vectors!")
+    (this * another) / (this.norm * another.norm)
+  }
+
+  override def *(another: Vector): Float = op(another, _ * _).sum
+
+  override def +(another: Vector): Vector = vecOp(another, _ + _)
 
   private def vecOp(another: Vector, operation: (Float, Float) => Float): Vector = {
     Vector(op(another, operation))
@@ -36,6 +32,10 @@ case class Vector(components: Array[Float]) extends Operable {
       .zip(another.components)
       .map(c => op(c._1, c._2))
   }
+
+  override def -(another: Vector): Vector = vecOp(another, _ - _)
+
+  override def *(number: Float): Vector = Vector(components.map(_ * number))
 
   override def equals(that: Any): Boolean = {
     that match {
