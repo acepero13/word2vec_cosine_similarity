@@ -1,12 +1,13 @@
 package de.semvox.word2vec.model
+import de.semvox.word2vec.db.schema.Word2VecDB
 import de.semvox.word2vec.linealg.Vector
 import de.semvox.word2vec.reader.VecReader
 
 case class Word2Vec(vocab: Queryable[Vector], vecSize: Int)  {
   def relatedTopicsFor(sentence: Seq[String], possibleTopics: Set[String]) = {
     val sentenceVector = sentence
-      .filter(vocab.contains(_))
       .map(s => vocab.get(s))
+      .filter(o => o.isDefined)
       .reduce((acc, oVec) => acc.flatMap(a => oVec.map(v => a + v)))
 
     nearestNeighbor(sentenceVector, possibleTopics)
@@ -36,10 +37,17 @@ case class Word2Vec(vocab: Queryable[Vector], vecSize: Int)  {
 object Word2Vec {
   def apply(filename: String, limit: Integer = Int.MaxValue, normalize: Boolean = true): Option[Word2Vec] = {
 
-    val reader = VecReader(filename, Int.MaxValue, true, false)
-    for (v <- reader.load()) yield {
-      new Word2Vec(v, v.size)
+    def readFromVecFile = {
+      val reader = VecReader(filename, Int.MaxValue, true, false)
+      for (v <- reader.load()) yield {
+        new Word2Vec(v, v.size)
+      }
     }
+
+    def readFromDB() = Word2VecDB()
+
+    if(filename.endsWith(".db")) Some(readFromDB) else readFromVecFile
+
   }
 }
 
@@ -56,7 +64,7 @@ object RunWord2Vec {
 
   private def execute = {
     val modelFile = "/home/alvaro/Documents/Projects/Coursera/Ml/cc.de.300.vec"
-    var model = Word2Vec(modelFile)
+    var model = Word2Vec("embeddings.db")
     model.map(m => m.rank("Apfel", Set("Orange", "Limo", "Kopfsalat", "Kuba")).foreach(p => println(p)))
     println("--------------")
     timed(
