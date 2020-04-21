@@ -5,7 +5,6 @@ import java.{lang, util}
 import de.semvox.word2vec.api.Word2VecModel
 
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 case class JWord2Vec(adapter: Word2VecModel) extends JWord2VecModel {
