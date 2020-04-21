@@ -97,7 +97,7 @@ object RunWord2Vec {
       val sentence = io.StdIn.readLine("Enter a sentece to analyze ")
       if (sentence == "exit") return
 
-      model.map(m => m.relatedTopicsFor(sentence
+      model.foreach(m => m.relatedTopicsFor(sentence
         .split(" ")
         .filter(_.length > 3)
         .toSeq, topics2)

@@ -29,7 +29,7 @@ case class DbQuery(databaseFilename: String) extends Queryable[Vector] {
   private def getFromDb(word: String) = {
     val result = Await.result(db.run(embeddings.filter(_.word === word).result), 5 seconds).toList
     val vectorResult = result match {
-      case h :: Nil => Some(Vector(h._2.split(" ").map(_.toFloat)))
+      case h :: _ => Some(Vector(h._2.split(" ").map(_.toFloat)))
       case _ => None
     }
 
