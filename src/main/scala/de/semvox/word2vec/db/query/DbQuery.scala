@@ -10,8 +10,13 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-case class DbQuery() extends Queryable[Vector] {
-  val db = Database.forConfig("embeddings")
+case class DbQuery(databaseFilename: String) extends Queryable[Vector] {
+  val driver = "org.sqlite.JDBC"
+  val urlPrefix = "jdbc:sqlite:"
+
+  def buildDatabaseUrl(): String = urlPrefix + databaseFilename
+
+  val db = Database.forURL(buildDatabaseUrl(), driver = this.driver, keepAliveConnection = true)
   val embeddings = TableQuery[Word2VecTable]
   val cachedWords: mutable.ListMap[String, Option[Vector]] = new mutable.ListMap[String, Option[Vector]]
 

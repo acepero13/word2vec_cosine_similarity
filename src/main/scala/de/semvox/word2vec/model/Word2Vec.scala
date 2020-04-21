@@ -47,7 +47,7 @@ object Word2Vec {
       }
     }
 
-    def readFromDB() = Word2VecDB()
+    def readFromDB() = Word2VecDB(filename)
 
     if (filename.endsWith(".db")) Some(readFromDB()) else readFromVecFile
 
@@ -68,7 +68,8 @@ object RunWord2Vec {
 
   private def execute(): Unit = {
     // val modelFile = "/home/alvaro/Documents/Projects/Coursera/Ml/cc.de.300.vec"
-    val model = Word2Vec("embeddings.db")
+    val filename = "/home/alvaro/Documents/Projects/Coursera/Ml/embeddings.db"
+    val model = Word2Vec(filename)
 
     println("--------------")
 

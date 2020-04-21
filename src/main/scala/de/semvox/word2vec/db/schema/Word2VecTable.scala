@@ -13,8 +13,8 @@ class Word2VecTable(tag: Tag) extends Table[(String, String)](tag, "embeddings")
 }
 
 object Word2VecDB {
-  def apply(): Word2Vec = {
-    new Word2Vec(DbQuery(), 300)
+  def apply(filename: String): Word2Vec = {
+    new Word2Vec(DbQuery(filename), 300)
   }
 }
 
