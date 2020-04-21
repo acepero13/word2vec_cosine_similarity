@@ -5,6 +5,7 @@ import de.semvox.word2vec.linealg.Vector
 import de.semvox.word2vec.model.Queryable
 import slick.jdbc.SQLiteProfile.api._
 
+import scala.collection.mutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -12,17 +13,22 @@ import scala.language.postfixOps
 case class DbQuery() extends Queryable[Vector] {
   val db = Database.forConfig("embeddings")
   val embeddings = TableQuery[Word2VecTable]
+  val cachedWords: mutable.ListMap[String, Option[Vector]] = new mutable.ListMap[String, Option[Vector]]
 
   override def contains(word: String): Boolean = true
 
   override def get(word: String): Option[Vector] = {
+    if(cachedWords.contains(word)) cachedWords(word) else getFromDb(word)
+  }
 
-
+  private def getFromDb(word: String) = {
     val result = Await.result(db.run(embeddings.filter(_.word === word).result), 5 seconds).toList
-    result match {
+    val vectorResult = result match {
       case h :: Nil => Some(Vector(h._2.split(" ").map(_.toFloat)))
       case _ => None
     }
 
+    cachedWords.put(word, vectorResult)
+    vectorResult
   }
 }
