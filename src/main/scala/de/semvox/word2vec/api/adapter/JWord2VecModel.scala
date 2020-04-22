@@ -6,5 +6,5 @@ trait JWord2VecModel {
 
   def rank(word: java.lang.String,
            in: java.util.Set[java.lang.String],
-           N: java.lang.Integer ): java.util.Map[java.lang.String, java.lang.Float]
+           limit: java.lang.Integer ): java.util.Map[java.lang.String, java.lang.Float]
 }

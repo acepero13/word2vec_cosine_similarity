@@ -8,9 +8,7 @@ case class Vector(components: Array[Float]) extends Operable {
 
   override def norm(): Float = {
     Math.sqrt(
-      components
-        .map(a => a * a)
-        .sum
+      components.map(a => a * a).sum
     ).toFloat
   }
 
@@ -25,11 +23,8 @@ case class Vector(components: Array[Float]) extends Operable {
 
   private def vecOp(another: Vector, operation: (Float, Float) => Float): Vector = Vector(op(another, operation))
 
-  private def op(another: Vector, op: (Float, Float) => Float): Array[Float] = {
-    this.components
-      .zip(another.components)
-      .map(c => op(c._1, c._2))
-  }
+  private def op(another: Vector, op: (Float, Float) => Float): Array[Float] =
+    this.components.zip(another.components).map(c => op(c._1, c._2))
 
   override def -(another: Vector): Vector = vecOp(another, _ - _)
 
@@ -37,9 +32,7 @@ case class Vector(components: Array[Float]) extends Operable {
 
   override def equals(that: Any): Boolean = {
     that match {
-      case Vector(thatComponents) => thatComponents
-        .zip(this.components)
-        .forall(c => c._1 == c._2)
+      case Vector(thatComponents) => thatComponents.zip(this.components).forall(c => c._1 == c._2)
       case _ => false
     }
   }

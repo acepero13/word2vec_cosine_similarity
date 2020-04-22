@@ -27,8 +27,8 @@ case class Word2Vec(vocab: Queryable[Vector], vecSize: Int) extends Word2VecMode
       .reverse
   }
 
-  def rank(word: String, in: Set[String], N: Int = 40): List[(String, Float)] = {
-    nearestNeighbor(vocab.get(word), in).take(N)
+  def rank(word: String, in: Set[String], limit: Int = 40): List[(String, Float)] = {
+    nearestNeighbor(vocab.get(word), in).take(limit)
   }
 
   private def get(word: String): Option[Vector] = {

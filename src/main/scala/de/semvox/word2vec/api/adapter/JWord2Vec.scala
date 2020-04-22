@@ -14,8 +14,8 @@ case class JWord2Vec(adapter: Word2VecModel) extends JWord2VecModel {
     mutable.LinkedHashMap(relatedTopics:_*)
   }
 
-  override def rank(word: String, in: util.Set[String], N: Integer): util.Map[String, lang.Float] = {
-    val ranked = adapter.rank(word, in.toSet, N).map(r => r._1 -> float2Float(r._2))
+  override def rank(word: String, in: util.Set[String], limit: Integer): util.Map[String, lang.Float] = {
+    val ranked = adapter.rank(word, in.toSet, limit).map(r => r._1 -> float2Float(r._2))
     mutable.LinkedHashMap(ranked:_*)
   }
 }
