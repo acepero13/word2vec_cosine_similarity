@@ -9,13 +9,12 @@ import scala.language.implicitConversions
 
 case class Word2Vec(vocab: Queryable[Vector], vecSize: Int) extends Word2VecModel {
   def relatedTopicsFor(sentence: Seq[String], possibleTopics: Set[String]): List[(String, Float)] = {
-    val sentenceVector = sentence
+    sentence
       .map(s => vocab.get(s))
       .filter(o => o.isDefined)
-      .reduce((acc, oVec) => acc.flatMap(a => oVec.map(v => a + v)))
-
-    nearestNeighbor(sentenceVector, possibleTopics)
-
+      .reduceOption((acc, oVec) => acc.flatMap(a => oVec.map(v => a + v)))
+      .map(v => nearestNeighbor(v, possibleTopics))
+      .getOrElse(List())
   }
 
   private def nearestNeighbor(from: Option[Vector], in: Set[String]): List[(String, Float)] = {

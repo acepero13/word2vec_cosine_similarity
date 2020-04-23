@@ -42,4 +42,15 @@ class Word2VecTest extends FlatSpec with Matchers {
     val res = vec.relatedTopicsFor(sentence, possibleTopics)
     res.head._1 should be("v6")
   }
+
+  "A unexisting set of words" should "return empty" in {
+    val v1 = Vector(Array(1.0f, 1.0f, 1.0f))
+    val v4 = Vector(Array(12.9f, -2.5f, -2.14f))
+    val v2 = Vector(Array(2.0f, 2.0f, 2.0f))
+    val v3 = Vector(Array(2.5f, 5.1f, 2.0f))
+    val map = Map("v1" -> v1, "v2" -> v2, "v3" -> v3, "v4" -> v4)
+    val vec = Word2Vec(Vocab(map, 3), 3)
+    val res = vec.relatedTopicsFor(Seq("v10", "v11"), Set("v2", "v4", "v3"))
+    res.size should be (0)
+  }
 }
