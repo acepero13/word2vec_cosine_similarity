@@ -25,8 +25,8 @@ def insertIntoDb(c, conn, fin):
         vectors = " ".join(tokens[1:])
         if (tokens[0]) == "'":
             continue
-        c.execute("INSERT INTO embeddings VALUES ('" +
-                  tokens[0] + "','" + vectors + "' )")
+
+        c.execute("INSERT INTO embeddings VALUES ('?', '?') ", (tokens[0], vectors))
         if counter % 100 == 0:
             conn.commit()
         counter += 1
