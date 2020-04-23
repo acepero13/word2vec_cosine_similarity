@@ -30,10 +30,6 @@ case class Word2Vec(vocab: Queryable[Vector], vecSize: Int) extends Word2VecMode
     nearestNeighbor(vocab.get(word), in).take(limit)
   }
 
-  private def get(word: String): Option[Vector] = {
-    vocab.get(word)
-  }
-
 }
 
 object Word2Vec {

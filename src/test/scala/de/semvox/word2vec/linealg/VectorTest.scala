@@ -38,6 +38,17 @@ class VectorTest extends FlatSpec with Matchers {
     v1 * 2.0f should be(expected)
   }
 
+  "Calculates norm of a vector" should "give the norm" in {
+    val v1 = Vector(Array(3, 4))
+    val expected = Vector(Array(0.6f, 0.8f))
+    v1.normalize() should be (expected)
+  }
+
+  "Tries to compare vector with number" should "give false" in {
+    val v1 = Vector(Array(3, 4))
+    v1.equals(1) should be (false)
+  }
+
   "Operation with uneven vectors" should "substract another vector" in {
     val v1 = Vector(Array(1.0f, 1.0f, 1.0f))
     val v2 = Vector(Array(2.0f, 2.0f))
@@ -46,3 +57,4 @@ class VectorTest extends FlatSpec with Matchers {
     }
   }
 }
+
