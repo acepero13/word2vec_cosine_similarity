@@ -1,8 +1,9 @@
 package de.semvox.word2vec.linealg
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class VectorTest extends FlatSpec with Matchers {
+class VectorTest extends AnyFlatSpec with Matchers {
   "Calculate cosine of two Vectors" should "calculate cosine" in {
     val v1 = Vector(Array(2.0f, 2.0f, 2.0f))
     val v2 = Vector(Array(1.0f, 1.0f, 1.0f))

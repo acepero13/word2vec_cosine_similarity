@@ -2,9 +2,10 @@ package de.semvox.word2vec.model
 
 import de.semvox.word2vec.linealg.Vector
 import de.semvox.word2vec.reader.Vocab
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class Word2VecTest extends FlatSpec with Matchers {
+class Word2VecTest extends AnyFlatSpec with Matchers {
   "A word" should "nearestNeighbors" in {
     val v1 = Vector(Array(1.0f, 1.0f, 1.0f))
     val v4 = Vector(Array(12.9f, -2.5f, -2.14f))
@@ -13,8 +14,10 @@ class Word2VecTest extends FlatSpec with Matchers {
     val map = Map("v1" -> v1, "v2" -> v2, "v3" -> v3, "v4" -> v4)
     val vec = Word2Vec(Vocab(map, 3), 3)
     val res: List[(String, Float)] = vec.rank("v1", Set("v2", "v4", "v3"))
-    res.head._1 should be("v2")
-    res(2)._1 should be("v4")
+    res match {
+      case h1::h2::h3::_ => {h1._1 should be("v2"); h3._1 should be("v4")}
+      case _ => true should be (false)
+    }
   }
 
   "A word" should "return a ranked list of closest related words" in {
@@ -40,7 +43,10 @@ class Word2VecTest extends FlatSpec with Matchers {
 
     val vec = Word2Vec(Vocab(map, 3), 3)
     val res = vec.relatedTopicsFor(sentence, possibleTopics)
-    res.head._1 should be("v6")
+    res match {
+      case h::_ => h._1 should be("v6")
+      case _ => true should be (false)
+    }
   }
 
   "A unexisting set of words" should "return empty" in {
