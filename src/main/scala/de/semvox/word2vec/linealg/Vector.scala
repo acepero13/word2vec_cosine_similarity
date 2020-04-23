@@ -39,4 +39,6 @@ case class Vector(components: Array[Float]) extends Operable {
 
   override def toString: String = components.toString
 
+  override def hashCode(): Int = components.hashCode()
+
 }

@@ -15,7 +15,7 @@ class Word2VecTest extends AnyFlatSpec with Matchers {
     val vec = Word2Vec(Vocab(map, 3), 3)
     val res: List[(String, Float)] = vec.rank("v1", Set("v2", "v4", "v3"))
     res match {
-      case h1::h2::h3::_ => {h1._1 should be("v2"); h3._1 should be("v4")}
+      case h1:: _ ::h3::_ => {h1._1 should be("v2"); h3._1 should be("v4")}
       case _ => true should be (false)
     }
   }
@@ -28,7 +28,10 @@ class Word2VecTest extends AnyFlatSpec with Matchers {
     val map = Map("v1" -> v1, "v2" -> v2, "v3" -> v3, "v4" -> v4)
     val vec = Word2Vec(Vocab(map, 3), 3)
     val res = vec.rank("v1", Set("v2", "v4", "v3"), 1)
-    res.head._1 should be("v2")
+    res match {
+      case h1:: _ => h1._1 should be("v2")
+      case _ => true should be (false)
+    }
   }
 
   "Get Relevant topics from sentence" should "return ranked words" in {
