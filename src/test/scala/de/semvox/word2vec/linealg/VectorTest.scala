@@ -47,7 +47,14 @@ class VectorTest extends AnyFlatSpec with Matchers {
 
   "Tries to compare vector with number" should "give false" in {
     val v1 = Vector(Array(3, 4))
+    //noinspection ComparingUnrelatedTypes
     v1.equals(1) should be (false)
+  }
+
+  "Calculates euclidean" should "give euclidean distance" in {
+    val v1 = Vector(Array(0, 3, 4, 5, 10))
+    val v2 = Vector(Array(7, 6, 3, -1, 3))
+    v1.distanceTo(v2) should be(12)
   }
 
   "Operation with uneven vectors" should "substract another vector" in {

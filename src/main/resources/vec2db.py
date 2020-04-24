@@ -13,12 +13,12 @@ def load_vectors(fname):
     fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
     n, d = map(int, fin.readline().split())
     data = {}
-    insertIntoDb(c, conn, fin)
+    insert_into_db(c, conn, fin)
     conn.close()
     return data
 
 
-def insertIntoDb(c, conn, fin):
+def insert_into_db(c, conn, fin):
     counter = 0
     for line in fin:
         tokens = line.rstrip().split(' ')

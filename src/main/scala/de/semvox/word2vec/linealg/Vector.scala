@@ -1,6 +1,11 @@
 package de.semvox.word2vec.linealg
 
 case class Vector(components: Array[Float]) extends Operable {
+
+  def distanceTo(another: Vector): Float = {
+    vecOp(another, _ - _).norm()
+  }
+
   def normalize(): Vector = {
     val normV = norm()
     Vector(components.map(_ / normV))

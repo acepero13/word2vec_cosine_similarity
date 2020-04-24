@@ -9,7 +9,7 @@ case class VecReader(filename: String, limit: Integer, normalize: Boolean, oldFo
     val source: BufferedSource = io.Source.fromFile(filename)
     val header = source.getLines().take(1).next().stripLineEnd.split(" ").toList
 
-    val (vecSize: Int, numWords: Int) = getModelStructure(header)
+    val (vecSize: Int, _: Int) = getModelStructure(header)
 
     def process(line: String) = {
       val vector = line.stripLineEnd.split(" ")
