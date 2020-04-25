@@ -8,7 +8,7 @@ def load_vectors(fname):
     c = conn.cursor()
     # Create table
     c.execute('''CREATE TABLE embeddings
-             (word text PRIMARY KEY, embeddings text)''')
+             (word text PRIMARY KEY, embeddings text, id INTEGER)''')
 
     fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
     n, d = map(int, fin.readline().split())
@@ -26,10 +26,13 @@ def insert_into_db(c, conn, fin):
         if (tokens[0]) == "'":
             continue
 
-        c.execute("INSERT INTO embeddings VALUES ('?', '?') ", (tokens[0], vectors))
+        c.execute("INSERT INTO embeddings VALUES ('?', '?', ?) ", (tokens[0], vectors, counter + 1))
         if counter % 100 == 0:
             conn.commit()
         counter += 1
+
+    c.execute("CREATE INDEX idIndex on embeddings(id)")
+    conn.commit()
 
 
 if __name__ == "__main__":

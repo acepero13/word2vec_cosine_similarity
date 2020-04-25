@@ -4,10 +4,20 @@ import de.semvox.word2vec.api.Word2VecModel
 import de.semvox.word2vec.db.schema.Word2VecDB
 import de.semvox.word2vec.linealg.Vector
 import de.semvox.word2vec.reader.VecReader
+import de.semvox.word2vec.utils.Neighbors
 
 import scala.language.implicitConversions
 
-case class Word2Vec(vocab: Queryable[Vector], vecSize: Int) extends Word2VecModel {
+case class Word2Vec(vocab: Queryable[String, Vector], vecSize: Int) extends Word2VecModel {
+  def distance(sentence: List[String]) = {
+    sentence
+      .map(s => vocab.get(s))
+      .filter(o => o.isDefined)
+      .reduceOption((acc, oVec) => acc.flatMap(a => oVec.map(v => a + v)))
+      .map(v => nearestNeighbor(v))
+      .getOrElse(List())
+  }
+
   def relatedTopicsFor(sentence: Seq[String], possibleTopics: Set[String]): List[(String, Float)] = {
     sentence
       .map(s => vocab.get(s))
@@ -24,6 +34,21 @@ case class Word2Vec(vocab: Queryable[Vector], vecSize: Int) extends Word2VecMode
       .toList
       .sortBy(_._2)
       .reverse
+  }
+
+  private def nearestNeighbor(from: Option[Vector]): List[(String, Float)] = {
+
+    @scala.annotation.tailrec
+    def nearestNeighbor(it: Iterator[(String, Vector)], neighbors: Neighbors):  Neighbors = {
+      if(!it.hasNext) neighbors
+      else  {
+        val entry = it.next()
+        neighbors+= (entry._1, from.map(f => f.distanceTo(entry._2)).getOrElse(-2.0f))
+        nearestNeighbor(it, neighbors)
+      }
+    }
+    nearestNeighbor(vocab.iterator, Neighbors(40)).toList
+
   }
 
   def rank(word: String, in: Set[String], limit: Int = 40): List[(String, Float)] = {
@@ -86,6 +111,12 @@ object RunWord2Vec {
       "Einwanderung", "Gerechtigkeit", "Sprache", "LGBTQIA", "Medien", "Philosophie", "Politik", "Privatsphäre",
       "Rasse", "Religion", "Gesellschaft", "Transportwesen", "Frauen", "Welt", "Stress", "Angst"
     )
+
+    val start = System.nanoTime
+
+    val results = model.get.distance(List("Frankreich"))
+    results.foreach(r => println((r._1 + " -> " + r._2)))
+    println(" Time needed to calculate distance was: " +(System.nanoTime - start) / 1000000000)
 
     @scala.annotation.tailrec
     def askUser(): Unit = {

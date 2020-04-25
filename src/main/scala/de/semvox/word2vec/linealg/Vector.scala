@@ -47,3 +47,9 @@ case class Vector(components: Array[Float]) extends Operable {
   override def hashCode(): Int = components.hashCode()
 
 }
+
+object Vector{
+  def from(line: String): Vector= {
+    Vector(line.split(" ").map(_.toFloat))
+  }
+}
